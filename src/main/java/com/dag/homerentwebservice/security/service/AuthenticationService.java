@@ -1,9 +1,12 @@
 package com.dag.homerentwebservice.security.service;
 
+import com.dag.homerentwebservice.base.DialogBoxButtonGenerator;
 import com.dag.homerentwebservice.model.dto.UserDto;
 import com.dag.homerentwebservice.model.dto.dialogbox.DialogBoxColorType;
 import com.dag.homerentwebservice.model.dto.dialogbox.DialogBoxDto;
 import com.dag.homerentwebservice.model.dto.dialogbox.DialogBoxType;
+import com.dag.homerentwebservice.model.dto.dialogbox.button.ButtonActionType;
+import com.dag.homerentwebservice.model.dto.dialogbox.button.DialogBoxButton;
 import com.dag.homerentwebservice.model.entity.User;
 import com.dag.homerentwebservice.model.enums.UserType;
 import com.dag.homerentwebservice.model.request.user.CreateUserRequest;
@@ -23,6 +26,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 
 @Service
 @RequiredArgsConstructor
@@ -33,12 +38,39 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenGenerator jwtTokenGenerator;
 
-    public UserDto register(CreateUserRequest cusCustomerSaveRequestDto) {
-        return cusCustomerService.createUser(cusCustomerSaveRequestDto, UserType.USER);
+    public BaseResponse<UserDto> register(CreateUserRequest cusCustomerSaveRequestDto) {
+        return handleBaseResponse(cusCustomerService.createUser(cusCustomerSaveRequestDto, UserType.USER));
+
     }
 
-    public UserDto registerAsAdmin(CreateUserRequest cusCustomerSaveRequestDto) {
-        return cusCustomerService.createUser(cusCustomerSaveRequestDto, UserType.ADMIN);
+    public BaseResponse<UserDto> registerAsAdmin(CreateUserRequest cusCustomerSaveRequestDto) {
+        return handleBaseResponse(cusCustomerService.createUser(cusCustomerSaveRequestDto, UserType.ADMIN));
+    }
+
+    private BaseResponse<UserDto> handleBaseResponse(UserDto userDto){
+        if (userDto==null){
+            DialogBoxButton dialogBoxButton = DialogBoxButtonGenerator.getInstance()
+                    .generateDismissButton("Try Again");
+            ArrayList<DialogBoxButton> dialogBoxButtonArrays = new ArrayList<>();
+            dialogBoxButtonArrays.add(dialogBoxButton);
+            DialogBoxDto dialogBoxDto = DialogBoxDto.builder()
+                    .dialogBoxType(DialogBoxType.ERROR)
+                    .dialogBoxColorType(DialogBoxColorType.ORANGE)
+                    .cancelable(true)
+                    .message("Email,phone or username are used therefore please try different information. ")
+                    .title("Oppss!")
+                    .buttonList(dialogBoxButtonArrays)
+                    .build();
+            return BaseResponse.<UserDto>builder()
+                    .data(null)
+                    .error(true)
+                    .dialogBoxDto(dialogBoxDto)
+                    .build();
+        }
+        return BaseResponse.<UserDto>builder()
+                .data(userDto)
+                .error(false)
+                .build();
     }
 
     public UserDto getProfile(UpdateUserRequest updateUserRequest){
@@ -80,12 +112,17 @@ public class AuthenticationService {
     }
 
     private BaseResponse<LoginResponse> getLoginResponseBaseResponseAsFailed() {
+        DialogBoxButton dialogBoxButton = DialogBoxButtonGenerator.getInstance()
+                .generateDismissButton("Try Again");
+        ArrayList<DialogBoxButton> dialogBoxButtonArrayList = new ArrayList<>();
+        dialogBoxButtonArrayList.add(dialogBoxButton);
         DialogBoxDto dialogBoxDto = DialogBoxDto.builder()
                 .dialogBoxType(DialogBoxType.ERROR)
                 .dialogBoxColorType(DialogBoxColorType.ORANGE)
                 .cancelable(true)
-                .message("")
-                .title("")
+                .message("We couldn't find you, sorry.")
+                .title("Oppss!")
+                .buttonList(dialogBoxButtonArrayList)
                 .build();
 
         return BaseResponse

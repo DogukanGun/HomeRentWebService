@@ -30,7 +30,11 @@ public class UserService {
         user.setUserType(userType.getLabel());
         String password = passwordEncoder.encode(user.getPassword());
         user.setPassword(password);
-        return USER_MAPPER.convertToUserDto(userRepository.save(user));
+        try {
+            return USER_MAPPER.convertToUserDto(userRepository.save(user));
+        }catch (Exception e){
+            return null;
+        }
     }
 
     public UserDto saveUserPhoto(SaveUserPhotoRequest saveUserPhotoRequest){

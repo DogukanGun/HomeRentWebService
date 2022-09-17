@@ -29,20 +29,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody CreateUserRequest createUserRequest){
-
-        UserDto cusCustomerDto =authenticationService.register(createUserRequest);
-
-        return ResponseEntity.ok(RestResponse.of(cusCustomerDto));
+    public BaseResponse<UserDto> register(@RequestBody CreateUserRequest createUserRequest){
+        return authenticationService.register(createUserRequest);
     }
 
     @PostMapping("/registerasadmin")
-    public ResponseEntity registerAsAdmin(@RequestBody CreateUserRequest createUserRequest){
-
-        UserDto cusCustomerDto =authenticationService.registerAsAdmin(createUserRequest);
-
-        return ResponseEntity.ok(RestResponse.of(cusCustomerDto));
+    public BaseResponse<UserDto> registerAsAdmin(@RequestBody CreateUserRequest createUserRequest){
+        return authenticationService.registerAsAdmin(createUserRequest);
     }
-
 
 }
