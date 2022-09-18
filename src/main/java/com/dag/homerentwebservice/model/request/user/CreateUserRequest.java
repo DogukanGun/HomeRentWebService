@@ -15,21 +15,8 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class CreateUserRequest {
 
-    @NotNull
-    @NotBlank
-    private String name;
-
-    @NotNull
-    @NotBlank
-    private String username;
-
-    @NotNull
     @NotBlank
     private String password;
 
-    @NotNull
-    @NotBlank
-    private String email;
-
-    private String phoneNumber;
+    private String username;
 }

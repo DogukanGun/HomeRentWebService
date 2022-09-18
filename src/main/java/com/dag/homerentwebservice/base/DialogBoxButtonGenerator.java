@@ -19,4 +19,16 @@ public class DialogBoxButtonGenerator {
                 .text(buttonText)
                 .build();
     }
+    public DialogBoxButton generateGoBackButton(String buttonText){
+        return DialogBoxButton.builder()
+                .actionType(ButtonActionType.GO_BACK)
+                .text(buttonText)
+                .build();
+    }
+    public DialogBoxButton generateRequestButton(String buttonText){
+        return DialogBoxButton.builder()
+                .actionType(ButtonActionType.REQUEST)
+                .text(buttonText)
+                .build();
+    }
 }

@@ -2,6 +2,8 @@ package com.dag.homerentwebservice.model.enums;
 
 public enum UserType {
     USER("user"),
+    TENANT("tenant"),
+    LANDLORD("landlord"),
     ADMIN("admin");
 
     public final String label;

@@ -9,11 +9,7 @@ import com.dag.homerentwebservice.security.dto.RestResponse;
 import com.dag.homerentwebservice.security.dto.SecLoginRequestDto;
 import com.dag.homerentwebservice.security.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -28,9 +24,9 @@ public class AuthenticationController {
         return authenticationService.login(secLoginRequestDto);
     }
 
-    @PostMapping("/register")
-    public BaseResponse<UserDto> register(@RequestBody CreateUserRequest createUserRequest){
-        return authenticationService.register(createUserRequest);
+    @PostMapping("/register/{userType}")
+    public BaseResponse<UserDto> register(@RequestBody CreateUserRequest createUserRequest, @PathVariable String userType){
+        return authenticationService.register(createUserRequest,userType);
     }
 
     @PostMapping("/registerasadmin")
