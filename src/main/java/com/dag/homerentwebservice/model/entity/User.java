@@ -1,6 +1,7 @@
 package com.dag.homerentwebservice.model.entity;
 
 
+import com.dag.homerentwebservice.model.entity.home.UserHomeRelation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -40,4 +43,7 @@ public class User extends BaseEntity{
 
     @Column(length = 1350000)
     private String userPhoto;
+
+    @OneToMany(mappedBy = "user")
+    List<UserHomeRelation> homes;
 }
