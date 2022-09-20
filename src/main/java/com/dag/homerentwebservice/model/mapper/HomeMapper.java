@@ -7,6 +7,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.mapstruct.factory.Mappers;
 
+import java.util.List;
+
 @Mapper(componentModel = "spring")
 public interface HomeMapper {
     HomeMapper HOME_MAPPER = Mappers.getMapper(HomeMapper.class);
@@ -17,4 +19,5 @@ public interface HomeMapper {
     //create entity
     Home createHome(CreateHomeRequest createHomeRequest);
 
+    List<HomeDto> convertToHomeDtoList(List<Home> homes);
 }

@@ -1,5 +1,6 @@
 package com.dag.homerentwebservice.model.mapper;
 
+import com.dag.homerentwebservice.model.dto.home.UserHomeRelationDto;
 import com.dag.homerentwebservice.model.entity.home.UserHomeRelation;
 import com.dag.homerentwebservice.model.request.home.CreateUserHomeRelation;
 import org.mapstruct.Mapper;
@@ -11,5 +12,6 @@ public interface UserHomeRelationMapper {
 
     UserHomeRelation createUserHomeRelationMapper(CreateUserHomeRelation createUserHomeRelation);
 
+    UserHomeRelationDto convertToUserHomeRelation(UserHomeRelation userHomeRelation);
 
 }

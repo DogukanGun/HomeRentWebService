@@ -19,10 +19,10 @@ public class UserHomeRelation {
     private Integer id;
 
     @Column(name = "user_id")
-    private Integer userId;
+    private int userId;
 
     @Column(name = "home_id")
-    private Integer homeId;
+    private int homeId;
 
     @ManyToOne
     @JoinColumn(name = "user_id",insertable = false,updatable = false)
