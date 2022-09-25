@@ -24,6 +24,9 @@ public class TextField {
 
     private String hint;
 
+    @Column(name = "form_content_id")
+    private int form_content_id;
+
     @ManyToOne(targetEntity = FormContent.class)
     @JoinColumn(name = "form_content_id",insertable = false,updatable = false)
     private FormContent formContent;

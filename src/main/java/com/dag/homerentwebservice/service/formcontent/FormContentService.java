@@ -82,7 +82,7 @@ public class FormContentService {
         try {
             TextField textField = FORM_CONTENT_MAPPER.createTextField(createTextFieldRequest);
             FormContent formContent = formContentEntityService.getFormContent(formId);
-            textField.setFormContent(formContent);
+            textField.setForm_content_id(formContent.getId());
             formContentEntityService.saveTextField(textField);
             formContent = formContentEntityService.getFormContent(formId);
             return returnPositiveResponse(
