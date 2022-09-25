@@ -5,10 +5,7 @@ import com.dag.homerentwebservice.model.request.formcontent.CreateFormContentReq
 import com.dag.homerentwebservice.model.response.BaseResponse;
 import com.dag.homerentwebservice.service.formcontent.FormContentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/formcontent")
@@ -21,4 +18,8 @@ public class FormContentController {
         return formContentService.createFormContent(createFormContentRequest);
     }
 
+    @GetMapping("/name/{name}")
+    public BaseResponse<FormContentDto> getFormContentByName(@PathVariable("name") String name){
+        return formContentService.getFormContent(name);
+    }
 }

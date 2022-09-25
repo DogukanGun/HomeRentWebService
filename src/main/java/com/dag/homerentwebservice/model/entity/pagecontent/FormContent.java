@@ -2,6 +2,7 @@
 
 package com.dag.homerentwebservice.model.entity.pagecontent;
 import com.dag.homerentwebservice.model.entity.BaseEntity;
+import com.dag.homerentwebservice.model.enums.FormContentPages;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,12 +22,13 @@ import java.util.List;
 @SuperBuilder
 @SQLDelete(sql="Update formcontents SET is_deleted = true where id = ?")
 @Where(clause = "is_deleted=false")
-public class FormContent  {
+public class FormContent extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    private String pageName;
+    @Enumerated(value = EnumType.STRING)
+    private FormContentPages pageName;
 
     private String title;
 

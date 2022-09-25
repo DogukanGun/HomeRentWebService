@@ -1,5 +1,6 @@
 package com.dag.homerentwebservice.model.dto.pagecontent;
 
+import com.dag.homerentwebservice.model.enums.TextFieldType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,5 +12,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TextFieldDto {
     private String hint;
-    private String textFieldType;
+    private TextFieldType type;
 }

@@ -8,6 +8,7 @@ import com.dag.homerentwebservice.model.dto.dialogbox.button.DialogBoxButton;
 import com.dag.homerentwebservice.model.dto.pagecontent.FormContentDto;
 import com.dag.homerentwebservice.model.entity.pagecontent.FormContent;
 import com.dag.homerentwebservice.model.entity.pagecontent.TextField;
+import com.dag.homerentwebservice.model.enums.FormContentPages;
 import com.dag.homerentwebservice.model.enums.TextFieldType;
 import com.dag.homerentwebservice.model.request.formcontent.CreateFormContentRequest;
 import com.dag.homerentwebservice.model.request.formcontent.CreateTextFieldRequest;
@@ -30,6 +31,24 @@ import static com.dag.homerentwebservice.model.mapper.FormContentMapper.FORM_CON
 public class FormContentService {
 
     private final FormContentEntityService formContentEntityService;
+
+    public BaseResponse<FormContentDto> getFormContent(String pageName){
+        try {
+            FormContent formContent = formContentEntityService.getFormContentByPageName(
+                    FormContentPages.valueOf(pageName)
+            );
+            return BaseResponse.<FormContentDto>builder()
+                    .data(FORM_CONTENT_MAPPER
+                                    .convertToFormContentDto(formContent))
+                    .error(false)
+                    .build();
+        }catch (Exception e){
+            return BaseResponse.<FormContentDto>builder()
+                    .error(false)
+                    .dialogBoxDto(generateFormNotFoundDialogBox())
+                    .build();
+        }
+    }
 
     public BaseResponse<FormContentDto> createFormContent(CreateFormContentRequest createFormContentRequest) {
         try {

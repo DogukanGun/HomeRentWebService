@@ -1,5 +1,6 @@
 package com.dag.homerentwebservice.model.dto.pagecontent;
 
+import com.dag.homerentwebservice.model.enums.FormContentPages;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 public class FormContentDto {
 
-    private String pageName;
+    private FormContentPages pageName;
 
     private String title;
 
