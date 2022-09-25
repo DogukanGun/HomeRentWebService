@@ -1,17 +1,21 @@
 package com.dag.homerentwebservice.service.formcontent;
 
 import com.dag.homerentwebservice.base.DialogBoxButtonGenerator;
+import com.dag.homerentwebservice.base.DialogBoxDtoGenerator;
 import com.dag.homerentwebservice.model.dto.dialogbox.DialogBoxColorType;
 import com.dag.homerentwebservice.model.dto.dialogbox.DialogBoxDto;
 import com.dag.homerentwebservice.model.dto.dialogbox.DialogBoxType;
 import com.dag.homerentwebservice.model.dto.dialogbox.button.DialogBoxButton;
 import com.dag.homerentwebservice.model.dto.pagecontent.FormContentDto;
+import com.dag.homerentwebservice.model.dto.pagecontent.TextFieldDto;
 import com.dag.homerentwebservice.model.entity.pagecontent.FormContent;
 import com.dag.homerentwebservice.model.entity.pagecontent.TextField;
 import com.dag.homerentwebservice.model.enums.FormContentPages;
 import com.dag.homerentwebservice.model.enums.TextFieldType;
 import com.dag.homerentwebservice.model.request.formcontent.CreateFormContentRequest;
 import com.dag.homerentwebservice.model.request.formcontent.CreateTextFieldRequest;
+import com.dag.homerentwebservice.model.request.formcontent.UpdateFormContentRequest;
+import com.dag.homerentwebservice.model.request.formcontent.UpdateTextfieldRequest;
 import com.dag.homerentwebservice.model.response.BaseResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +35,63 @@ import static com.dag.homerentwebservice.model.mapper.FormContentMapper.FORM_CON
 public class FormContentService {
 
     private final FormContentEntityService formContentEntityService;
+
+    public BaseResponse<TextFieldDto> changeTextFieldType(UpdateTextfieldRequest updateTextfieldRequest){
+        try {
+            TextField textField = formContentEntityService.getTextField(updateTextfieldRequest.getTextfieldId());
+            textField.setType(updateTextfieldRequest.getType());
+            return returnPositiveResponse(
+                    FORM_CONTENT_MAPPER.convertToTextFieldDto(
+                            formContentEntityService.saveTextField(textField)
+                    )
+            );
+        }catch (Exception e){
+            return DialogBoxDtoGenerator.getInstance().generateCommonErrorResponse();
+        }
+    }
+
+    public BaseResponse<TextFieldDto> changeTextFieldHint(UpdateTextfieldRequest updateTextfieldRequest){
+        try {
+            TextField textField = formContentEntityService.getTextField(updateTextfieldRequest.getTextfieldId());
+            textField.setHint(updateTextfieldRequest.getHint());
+            return returnPositiveResponse(
+                    FORM_CONTENT_MAPPER.convertToTextFieldDto(
+                            formContentEntityService.saveTextField(textField)
+                    )
+            );
+        }catch (Exception e){
+            return DialogBoxDtoGenerator.getInstance().generateCommonErrorResponse();
+        }
+    }
+
+    public BaseResponse<FormContentDto> changeFormContentTitle(UpdateFormContentRequest updateFormContentRequest){
+        try {
+            FormContent formContent = formContentEntityService.getFormContent(updateFormContentRequest.getFormId());
+            formContent.setTitle(updateFormContentRequest.getTitle());
+            return returnPositiveResponse(
+                    FORM_CONTENT_MAPPER.convertToFormContentDto(
+                            formContentEntityService.saveFormContent(formContent)
+                    )
+            );
+        }catch (Exception e){
+            return DialogBoxDtoGenerator.getInstance().generateCommonErrorResponse();
+        }
+    }
+
+    public BaseResponse<FormContentDto> addTextFieldToForm(int formId,CreateTextFieldRequest createTextFieldRequest){
+        try {
+            TextField textField = FORM_CONTENT_MAPPER.createTextField(createTextFieldRequest);
+            FormContent formContent = formContentEntityService.getFormContent(formId);
+            textField.setFormContent(formContent);
+            formContentEntityService.saveTextField(textField);
+            formContent = formContentEntityService.getFormContent(formId);
+            return returnPositiveResponse(
+                    FORM_CONTENT_MAPPER.convertToFormContentDto(formContent)
+            );
+        }catch (Exception e){
+            return DialogBoxDtoGenerator.getInstance().generateCommonErrorResponse();
+        }
+    }
 
     public BaseResponse<FormContentDto> getFormContent(String pageName){
         try {
@@ -78,7 +139,6 @@ public class FormContentService {
         formContent = formContentEntityService.saveFormContent(formContent);
         for (CreateTextFieldRequest createTextFieldRequest : createFormContentRequest.getCreateTextFieldRequests()) {
             TextField textField = FORM_CONTENT_MAPPER.createTextField(createTextFieldRequest);
-            textField.setFormId(formContent.getId());
             formContentEntityService.saveTextField(textField);
         }
         FormContentDto returnedFormContent = FORM_CONTENT_MAPPER.convertToFormContentDto(
@@ -105,6 +165,13 @@ public class FormContentService {
                 .title("Oppss!!")
                 .message("Form bulunamadı")
                 .buttonList(dialogBoxButtons)
+                .build();
+    }
+
+    private <T> BaseResponse<T> returnPositiveResponse(T data){
+        return BaseResponse.<T>builder()
+                .data(data)
+                .error(false)
                 .build();
     }
 }

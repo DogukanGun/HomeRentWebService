@@ -9,11 +9,12 @@ import javax.persistence.Enumerated;
 
 @Data
 @Builder
-public class CreateTextFieldRequest {
+public class UpdateTextfieldRequest {
+
+    int textfieldId;
 
     @Enumerated(EnumType.STRING)
     private TextFieldType type;
 
     private String hint;
-
 }

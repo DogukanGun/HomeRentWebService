@@ -1,5 +1,6 @@
 package com.dag.homerentwebservice.model.request.home;
 
+import com.dag.homerentwebservice.model.enums.HomeStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,5 +13,5 @@ import lombok.NoArgsConstructor;
 public class UpdateHomeStatusRequest {
     private int homeId;
 
-    private int status;
+    private HomeStatus status;
 }

@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -26,9 +25,13 @@ public class FormContentEntityService {
     }
 
     public List<TextField> getTextFieldsOfFromContent(int formId) throws IllegalArgumentException{
-        return textFieldRepository.findAllByFormId(formId);
+        return textFieldRepository.getAllTextfieldsById(formId);
     }
 
+    public TextField getTextField(int textFieldId){
+        return textFieldRepository.findById(textFieldId)
+                .orElseThrow(()->new IllegalArgumentException(""));
+    }
     public FormContent getFormContentByPageName(FormContentPages pageName){
         return formContentRepository.checkForm(pageName)
                 .orElseThrow(()->new IllegalArgumentException(""));
