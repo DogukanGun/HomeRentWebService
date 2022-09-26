@@ -16,5 +16,7 @@ public class UpdateTextfieldRequest {
     @Enumerated(EnumType.STRING)
     private TextFieldType type;
 
+    private String title;
+
     private String hint;
 }

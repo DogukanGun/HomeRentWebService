@@ -22,6 +22,8 @@ public class TextField {
     @Enumerated(EnumType.STRING)
     private TextFieldType type;
 
+    private String title;
+
     private String hint;
 
     @Column(name = "form_content_id")

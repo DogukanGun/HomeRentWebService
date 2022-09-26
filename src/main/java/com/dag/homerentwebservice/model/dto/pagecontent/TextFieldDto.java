@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class TextFieldDto {
     private String hint;
+    private String title;
     private TextFieldType type;
 }
