@@ -1,5 +1,6 @@
 package com.dag.homerentwebservice.model.request.home;
 
+import com.dag.homerentwebservice.model.request.landlordaccount.CreateLandlordAccountRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,4 +28,6 @@ public class CreateHomeRequest {
     private String facilities;
 
     private Integer userId;
+
+    private CreateLandlordAccountRequest createLandlordAccountRequest;
 }

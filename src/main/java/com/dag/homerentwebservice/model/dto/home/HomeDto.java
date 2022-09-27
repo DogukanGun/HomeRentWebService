@@ -2,6 +2,8 @@
 
 package com.dag.homerentwebservice.model.dto.home;
 
+import com.dag.homerentwebservice.model.dto.account.LandlordAccountDto;
+import com.dag.homerentwebservice.model.entity.account.LandlordAccount;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,5 +33,7 @@ public class HomeDto {
     private double size;
 
     private String facilities;
+
+    private LandlordAccountDto landlordAccountDto;
 
 }

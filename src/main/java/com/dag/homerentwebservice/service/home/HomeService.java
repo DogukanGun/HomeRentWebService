@@ -1,6 +1,7 @@
 package com.dag.homerentwebservice.service.home;
 
 import com.dag.homerentwebservice.base.DialogBoxDtoGenerator;
+import com.dag.homerentwebservice.model.dto.account.LandlordAccountDto;
 import com.dag.homerentwebservice.model.dto.dialogbox.DialogBoxDto;
 import com.dag.homerentwebservice.model.dto.home.HomeDto;
 import com.dag.homerentwebservice.model.dto.home.UserHomeRelationDto;
@@ -15,6 +16,7 @@ import com.dag.homerentwebservice.model.response.BaseResponse;
 import com.dag.homerentwebservice.repository.HomeRepository;
 import com.dag.homerentwebservice.repository.UserHomeRelationRepository;
 import com.dag.homerentwebservice.security.service.AuthenticationService;
+import com.dag.homerentwebservice.service.account.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,7 @@ public class HomeService {
     private final HomeRepository homeRepository;
     private final AuthenticationService authenticationService;
     private final UserHomeRelationRepository userHomeRelationRepository;
+    private final AccountService accountService;
 
     public BaseResponse<HomeDto> createHome(CreateHomeRequest createHomeRequest){
         try {
@@ -47,10 +50,18 @@ public class HomeService {
                     .build();
             UserHomeRelation userHomeRelation = USER_HOME_RELATION_MAPPER.createUserHomeRelationMapper(createUserHomeRelation);
             userHomeRelationRepository.save(userHomeRelation);
-            return BaseResponse.<HomeDto>builder()
-                    .data(HOME_MAPPER.convertToHomeDto(home))
-                    .error(false)
-                    .build();
+            BaseResponse<LandlordAccountDto> baseResponse =
+                    accountService.saveLandlordAccount(createHomeRequest.getCreateLandlordAccountRequest());
+            HomeDto homeDto = HOME_MAPPER.convertToHomeDto(home);
+            homeDto.setLandlordAccountDto(baseResponse.getData());
+            if (!baseResponse.getError()){
+                return BaseResponse.<HomeDto>builder()
+                        .data(homeDto)
+                        .error(false)
+                        .build();
+            }else{
+                return DialogBoxDtoGenerator.getInstance().generateCommonErrorResponse();
+            }
         }catch (Exception e){
             return DialogBoxDtoGenerator.getInstance().generateCommonErrorResponse();
         }
