@@ -139,6 +139,7 @@ public class FormContentService {
         formContent = formContentEntityService.saveFormContent(formContent);
         for (CreateTextFieldRequest createTextFieldRequest : createFormContentRequest.getCreateTextFieldRequests()) {
             TextField textField = FORM_CONTENT_MAPPER.createTextField(createTextFieldRequest);
+            textField.setForm_content_id(formContent.getId());
             formContentEntityService.saveTextField(textField);
         }
         FormContentDto returnedFormContent = FORM_CONTENT_MAPPER.convertToFormContentDto(
