@@ -1,4 +1,4 @@
-package com.dag.homerentwebservice.repository;
+package com.dag.homerentwebservice.repository.form;
 
 import com.dag.homerentwebservice.model.entity.pagecontent.FormContent;
 import com.dag.homerentwebservice.model.enums.FormContentPages;

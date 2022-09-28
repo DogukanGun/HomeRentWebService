@@ -1,5 +1,3 @@
-
-
 package com.dag.homerentwebservice.model.entity.pagecontent;
 import com.dag.homerentwebservice.model.entity.BaseEntity;
 import com.dag.homerentwebservice.model.enums.FormContentPages;

@@ -1,5 +1,8 @@
 package com.dag.homerentwebservice.model.entity.home;
 import com.dag.homerentwebservice.model.entity.BaseEntity;
+import com.dag.homerentwebservice.model.entity.account.LandlordAccount;
+import com.dag.homerentwebservice.model.entity.home.facility.Facility;
+import com.dag.homerentwebservice.model.enums.PropertyType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,19 +28,32 @@ public class Home extends BaseEntity {
 
     private String homeName;
 
-    @Column(length = 1350000)
-    private String homePhoto;
-
     private double price;
 
     private int bedroomCount;
 
-    private String propertyType;
+    @Enumerated(value = EnumType.STRING)
+    private PropertyType propertyType;
 
     private double size;
 
-    private String facilities;
+    private boolean waterBillIncluded;
+
+    private boolean electricityBillIncluded;
+
+    private boolean autoPay;
+
+    private String message;
+
+    @OneToOne(mappedBy = "home")
+    LandlordAccount landlordAccount;
+
+    @OneToMany(mappedBy = "home")
+    List<HomeImage> homeImages;
 
     @OneToMany(mappedBy = "home")
     List<UserHomeRelation> users;
+
+    @OneToMany(mappedBy = "home")
+    List<Facility> facilities;
 }

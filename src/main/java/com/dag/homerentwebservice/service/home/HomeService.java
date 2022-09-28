@@ -2,31 +2,32 @@ package com.dag.homerentwebservice.service.home;
 
 import com.dag.homerentwebservice.base.DialogBoxDtoGenerator;
 import com.dag.homerentwebservice.model.dto.account.LandlordAccountDto;
-import com.dag.homerentwebservice.model.dto.dialogbox.DialogBoxDto;
 import com.dag.homerentwebservice.model.dto.home.HomeDto;
 import com.dag.homerentwebservice.model.dto.home.UserHomeRelationDto;
+import com.dag.homerentwebservice.model.entity.account.LandlordAccount;
 import com.dag.homerentwebservice.model.entity.home.Home;
+import com.dag.homerentwebservice.model.entity.home.HomeImage;
 import com.dag.homerentwebservice.model.entity.home.UserHomeRelation;
 import com.dag.homerentwebservice.model.entity.home.HomeFilterStatus;
+import com.dag.homerentwebservice.model.entity.home.facility.Facility;
 import com.dag.homerentwebservice.model.enums.HomeStatus;
 import com.dag.homerentwebservice.model.request.home.CreateHomeRequest;
 import com.dag.homerentwebservice.model.request.home.CreateUserHomeRelation;
 import com.dag.homerentwebservice.model.request.home.UpdateHomeStatusRequest;
+import com.dag.homerentwebservice.model.request.home.facility.CreateFacilityRequest;
 import com.dag.homerentwebservice.model.response.BaseResponse;
-import com.dag.homerentwebservice.repository.HomeRepository;
-import com.dag.homerentwebservice.repository.UserHomeRelationRepository;
+import com.dag.homerentwebservice.repository.home.*;
 import com.dag.homerentwebservice.security.service.AuthenticationService;
 import com.dag.homerentwebservice.service.account.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import java.rmi.UnexpectedException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 import static com.dag.homerentwebservice.model.mapper.HomeMapper.HOME_MAPPER;
+import static com.dag.homerentwebservice.model.mapper.LandlordMapper.LANDLORD_MAPPER;
 import static com.dag.homerentwebservice.model.mapper.UserHomeRelationMapper.USER_HOME_RELATION_MAPPER;
 
 @Service
@@ -37,6 +38,9 @@ public class HomeService {
     private final AuthenticationService authenticationService;
     private final UserHomeRelationRepository userHomeRelationRepository;
     private final AccountService accountService;
+    private final HomeImageRepository homeImageRepository;
+    private final FacilityRepository facilityRepository;
+    private final LandlordAccountRepository landlordAccountRepository;
 
     public BaseResponse<HomeDto> createHome(CreateHomeRequest createHomeRequest){
         try {
@@ -54,11 +58,31 @@ public class HomeService {
                     accountService.saveLandlordAccount(createHomeRequest.getCreateLandlordAccountRequest());
             HomeDto homeDto = HOME_MAPPER.convertToHomeDto(home);
             homeDto.setLandlordAccountDto(baseResponse.getData());
-            if (!baseResponse.getError()){
-                return BaseResponse.<HomeDto>builder()
-                        .data(homeDto)
-                        .error(false)
+            for (String image : createHomeRequest.getHomeImagesAsBase64()){
+                HomeImage homeImage = HomeImage.builder()
+                        .image(image)
+                        .homeId(home.getId())
                         .build();
+                homeImageRepository.save(homeImage);
+            }
+            for (CreateFacilityRequest createFacilityRequest: createHomeRequest.getCreateFacilityRequests()){
+                Facility facility = Facility.builder()
+                        .facilityType(createFacilityRequest.getFacilityType())
+                        .homeId(home.getId())
+                        .build();
+                facilityRepository.save(facility);
+            }
+            if (!baseResponse.getError()){
+                try {
+                    home = homeRepository.findById(home.getId()).orElseThrow(()->new IllegalArgumentException(""));
+                    homeDto = HOME_MAPPER.convertToHomeDto(home);
+                    return BaseResponse.<HomeDto>builder()
+                            .data(homeDto)
+                            .error(false)
+                            .build();
+                }catch (IllegalArgumentException illegalArgumentException){
+                    return DialogBoxDtoGenerator.getInstance().generateCommonErrorResponse();
+                }
             }else{
                 return DialogBoxDtoGenerator.getInstance().generateCommonErrorResponse();
             }
@@ -118,12 +142,17 @@ public class HomeService {
             UserHomeRelation userHomeRelation = userHomeRelationRepository
                     .findByHomeIdAndUserId(requestedHome.getId(),authenticationService.getCurrentCustomerId())
                     .orElseThrow(() -> new UnexpectedException(""));
-            if (!userHomeRelation.getStatus().equals(HomeStatus.Sold.name()))
+            Optional<LandlordAccount> landlordAccount = landlordAccountRepository.findByHomeId(requestedHome.getId());
+            if (!userHomeRelation.getStatus().equals(HomeStatus.Sold.name()) && landlordAccount.isPresent()) {
+                LandlordAccountDto landlordAccountDto =
+                        LANDLORD_MAPPER.convertToLandlordAccountDto(landlordAccount.get());
+                HomeDto requestedHomeDto = HOME_MAPPER.convertToHomeDto(requestedHome);
+                requestedHomeDto.setLandlordAccountDto(landlordAccountDto);
                 return BaseResponse.<HomeDto>builder()
-                        .data(HOME_MAPPER.convertToHomeDto(requestedHome))
+                        .data(requestedHomeDto)
                         .error(false)
                         .build();
-            else
+            }else
                 return DialogBoxDtoGenerator.getInstance().generateCommonErrorResponse();
 
         }catch (UnexpectedException unexpectedException){

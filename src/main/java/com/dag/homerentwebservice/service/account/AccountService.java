@@ -4,8 +4,7 @@ import com.dag.homerentwebservice.model.dto.account.LandlordAccountDto;
 import com.dag.homerentwebservice.model.entity.account.LandlordAccount;
 import com.dag.homerentwebservice.model.request.landlordaccount.CreateLandlordAccountRequest;
 import com.dag.homerentwebservice.model.response.BaseResponse;
-import com.dag.homerentwebservice.repository.LandlordAccountRepository;
-import lombok.AllArgsConstructor;
+import com.dag.homerentwebservice.repository.home.LandlordAccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

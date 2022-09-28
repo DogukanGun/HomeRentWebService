@@ -1,5 +1,6 @@
 package com.dag.homerentwebservice.model.entity.account;
 
+import com.dag.homerentwebservice.model.entity.home.Home;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,5 +22,12 @@ public class LandlordAccount {
     private String accountNumber;
     private String bankName;
     private String walletNumber;
+
+    @Column(name = "landlord_home_id")
+    private int homeId;
+
+    @OneToOne()
+    @JoinColumn(name = "landlord_home_id",updatable = false,insertable = false,nullable = false)
+    private Home home;
 
 }

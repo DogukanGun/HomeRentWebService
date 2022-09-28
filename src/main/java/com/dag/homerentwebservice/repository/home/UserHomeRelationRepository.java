@@ -1,4 +1,4 @@
-package com.dag.homerentwebservice.repository;
+package com.dag.homerentwebservice.repository.home;
 
 import com.dag.homerentwebservice.model.entity.home.UserHomeRelation;
 import org.springframework.data.jpa.repository.JpaRepository;

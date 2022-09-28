@@ -18,4 +18,6 @@ public class CreateTextFieldRequest {
 
     private String hint;
 
+    private String key;
+
 }
