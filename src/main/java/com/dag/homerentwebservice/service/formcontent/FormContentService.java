@@ -10,7 +10,9 @@ import com.dag.homerentwebservice.model.dto.pagecontent.FormContentDto;
 import com.dag.homerentwebservice.model.dto.pagecontent.TextFieldDto;
 import com.dag.homerentwebservice.model.entity.pagecontent.FormContent;
 import com.dag.homerentwebservice.model.entity.pagecontent.TextField;
+import com.dag.homerentwebservice.model.enums.Facilities;
 import com.dag.homerentwebservice.model.enums.FormContentPages;
+import com.dag.homerentwebservice.model.enums.PropertyType;
 import com.dag.homerentwebservice.model.enums.TextFieldType;
 import com.dag.homerentwebservice.model.request.formcontent.CreateFormContentRequest;
 import com.dag.homerentwebservice.model.request.formcontent.CreateTextFieldRequest;
@@ -26,6 +28,7 @@ import org.springframework.transaction.interceptor.TransactionInterceptor;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import static com.dag.homerentwebservice.model.mapper.FormContentMapper.FORM_CONTENT_MAPPER;
@@ -83,11 +86,11 @@ public class FormContentService {
             TextField textField = FORM_CONTENT_MAPPER.createTextField(createTextFieldRequest);
             FormContent formContent = formContentEntityService.getFormContent(formId);
             textField.setForm_content_id(formContent.getId());
+            textField.setHint(textFieldHintGenerateAccordingToListType(createTextFieldRequest));
+            textField.setType(textFieldTypeGenerateAccordingToListType(createTextFieldRequest));
             formContentEntityService.saveTextField(textField);
             formContent = formContentEntityService.getFormContent(formId);
-            return returnPositiveResponse(
-                    FORM_CONTENT_MAPPER.convertToFormContentDto(formContent)
-            );
+            return returnPositiveResponse(FORM_CONTENT_MAPPER.convertToFormContentDto(formContent));
         }catch (Exception e){
             return DialogBoxDtoGenerator.getInstance().generateCommonErrorResponse();
         }
@@ -140,6 +143,8 @@ public class FormContentService {
         for (CreateTextFieldRequest createTextFieldRequest : createFormContentRequest.getCreateTextFieldRequests()) {
             TextField textField = FORM_CONTENT_MAPPER.createTextField(createTextFieldRequest);
             textField.setForm_content_id(formContent.getId());
+            textField.setHint(textFieldHintGenerateAccordingToListType(createTextFieldRequest));
+            textField.setType(textFieldTypeGenerateAccordingToListType(createTextFieldRequest));
             formContentEntityService.saveTextField(textField);
         }
         FormContentDto returnedFormContent = FORM_CONTENT_MAPPER.convertToFormContentDto(
@@ -151,6 +156,23 @@ public class FormContentService {
                 )
         );
         return returnedFormContent;
+    }
+
+    private String textFieldHintGenerateAccordingToListType(CreateTextFieldRequest createTextFieldRequest){
+        if (createTextFieldRequest.getType() == TextFieldType.List_Facilities){
+            return Arrays.toString(Facilities.values());
+        }else if(createTextFieldRequest.getType() == TextFieldType.List_Properties){
+            return Arrays.toString(PropertyType.values());
+        }
+        return createTextFieldRequest.getHint();
+    }
+
+    private TextFieldType textFieldTypeGenerateAccordingToListType(CreateTextFieldRequest createTextFieldRequest){
+        if (createTextFieldRequest.getType() == TextFieldType.List_Facilities
+                || createTextFieldRequest.getType() == TextFieldType.List_Properties){
+            return TextFieldType.List;
+        }
+        return createTextFieldRequest.getType();
     }
 
     private DialogBoxDto generateFormNotFoundDialogBox() {
