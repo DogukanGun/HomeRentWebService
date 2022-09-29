@@ -102,8 +102,7 @@ public class FormContentService {
                     FormContentPages.valueOf(pageName)
             );
             return BaseResponse.<FormContentDto>builder()
-                    .data(FORM_CONTENT_MAPPER
-                                    .convertToFormContentDto(formContent))
+                    .data(FORM_CONTENT_MAPPER.convertToFormContentDto(formContent))
                     .error(false)
                     .build();
         }catch (Exception e){

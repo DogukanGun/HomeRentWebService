@@ -13,5 +13,6 @@ import lombok.NoArgsConstructor;
 public class TextFieldDto {
     private String hint;
     private String title;
+    private String key;
     private TextFieldType type;
 }
