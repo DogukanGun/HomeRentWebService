@@ -29,6 +29,12 @@ public class CreateHomeRequest {
 
     private double size;
 
+    private boolean waterBillIncluded;
+
+    private boolean electricityBillIncluded;
+
+    private boolean autoPay;
+
     private CreateLandlordAccountRequest createLandlordAccountRequest;
 
     private List<String> homeImagesAsBase64;
