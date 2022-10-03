@@ -6,5 +6,6 @@ public enum TextFieldType {
     Switch,
     List,
     List_Facilities,
-    List_Properties
+    List_Properties,
+    Image
 }
