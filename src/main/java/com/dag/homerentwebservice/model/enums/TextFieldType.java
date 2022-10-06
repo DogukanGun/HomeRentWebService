@@ -7,5 +7,6 @@ public enum TextFieldType {
     List,
     List_Facilities,
     List_Properties,
-    Image
+    Image,
+    Location
 }
